@@ -1,0 +1,44 @@
+﻿@model IEnumerable<EventosMVC.Models.EventosViewModel>
+
+@{
+    ViewData["Title"] = "Eventos";
+}
+
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success text-center" id="mensagem-sucesso">
+        @TempData["MensagemSucesso"]
+    </div>
+
+    <script>
+        // Redireciona automaticamente após 3 segundos
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Index", "Home")';
+        }, 3000);
+    </script>
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-8">
+        <div class="d-flex justify-content-between mb-3">
+            <h3>Eventos</h3>
+            <a asp-action="Create" class="btn btn-primary">Criar Novo Evento</a>
+        </div>
+
+        @foreach (var evento in Model)
+        {
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">@evento.Titulo</h5>
+                    <p class="card-text">
+                        <strong>Data:</strong> @evento.Data.ToString("dd/MM/yyyy") <br />
+                        <strong>Local:</strong> @evento.Local
+                    </p>
+                    <a asp-action="Details" asp-route-id="@evento.Id" class="btn btn-info btn-sm">Detalhes</a>
+                    <a asp-action="Edit" asp-route-id="@evento.Id" class="btn btn-warning btn-sm">Editar</a>
+                    <a asp-action="Delete" asp-route-id="@evento.Id" class="btn btn-danger btn-sm">Apagar</a>
+                </div>
+            </div>
+        }
+    </div>
+</div>

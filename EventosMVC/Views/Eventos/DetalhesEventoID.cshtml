@@ -1,0 +1,24 @@
+﻿@model EventosMVC.Models.EventosViewModel
+
+@{
+    ViewData["Title"] = "Detalhes do Evento";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4>@Model.Titulo</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Data:</strong> @Model.Data.ToString("dd/MM/yyyy")</p>
+                <p><strong>Local:</strong> @Model.Local</p>
+                <p><strong>Descrição:</strong> @Model.Descricao</p>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Editar</a>
+                <a asp-action="Index" class="btn btn-secondary">Voltar</a>
+            </div>
+        </div>
+    </div>
+</div>

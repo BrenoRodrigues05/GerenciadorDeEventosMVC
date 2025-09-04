@@ -1,0 +1,83 @@
+﻿@model EventosMVC.Models.EventosViewModel
+
+@{
+    ViewData["Title"] = "Criar Evento";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-8">
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4>Criar Evento</h4>
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    @Html.AntiForgeryToken()
+
+                    <div class="mb-3">
+                        <label asp-for="Titulo" class="form-label"></label>
+                        <input asp-for="Titulo" class="form-control" />
+                        <span asp-validation-for="Titulo" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Cidade" class="form-label"></label>
+                        <input asp-for="Cidade" class="form-control" />
+                        <span asp-validation-for="Cidade" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Entrada" class="form-label"></label>
+                        <input asp-for="Entrada" class="form-control" />
+                        <span asp-validation-for="Entrada" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Descricao" class="form-label"></label>
+                        <textarea asp-for="Descricao" class="form-control"></textarea>
+                        <span asp-validation-for="Descricao" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Data" class="form-label"></label>
+                        <input asp-for="Data" type="date" class="form-control" />
+                        <span asp-validation-for="Data" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Local" class="form-label"></label>
+                        <input asp-for="Local" class="form-control" />
+                        <span asp-validation-for="Local" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="Vagas" class="form-label"></label>
+                        <input asp-for="Vagas" type="number" min="1" class="form-control" />
+                        <span asp-validation-for="Vagas" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="ImagemUrl" class="form-label"></label>
+                        <input asp-for="ImagemUrl" class="form-control" placeholder="URL da imagem do evento" />
+                        <span asp-validation-for="ImagemUrl" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Criar Evento</button>
+                    <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+
+                    @* Mensagem geral de erro *@
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger mt-3">
+                            Verifique os erros no formulário antes de enviar.
+                        </div>
+                    }
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+@if (TempData["MensagemSucesso"] != null)
+{
+    <div class="alert alert-success text-center" id="mensagem-sucesso">
+        @TempData["MensagemSucesso"]
+    </div>
+
+    <script>
+        // Redireciona automaticamente após 3 segundos
+        setTimeout(() => {
+            window.location.href = '@Url.Action("Index", "Eventos")';
+        }, 3000);
+    </script>
+}
+
+<div class="text-center py-5 bg-light rounded-3 mb-4">
+    <h1 class="display-4 fw-bold">Bem-vindo ao Gerenciador de Eventos</h1>
+    <p class="lead">Gerencie e participe de eventos facilmente</p>
+
+    <div class="d-grid gap-2 d-sm-flex justify-content-center mt-4">
+        <a class="btn btn-primary btn-lg me-2" asp-area="" asp-controller="Eventos" asp-action="Index">Ver Eventos</a>
+        <a class="btn btn-warning btn-lg" asp-area="" asp-controller="Inscricoes" asp-action="Index">Inscrições</a>
+    </div>
+</div>
