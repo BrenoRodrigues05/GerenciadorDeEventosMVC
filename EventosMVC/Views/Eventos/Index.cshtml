@@ -4,41 +4,57 @@
     ViewData["Title"] = "Eventos";
 }
 
-@if (TempData["MensagemSucesso"] != null)
-{
-    <div class="alert alert-success text-center" id="mensagem-sucesso">
-        @TempData["MensagemSucesso"]
-    </div>
+<h2 class="mb-4">Lista de Eventos</h2>
 
-    <script>
-        // Redireciona automaticamente após 3 segundos
-        setTimeout(() => {
-            window.location.href = '@Url.Action("Index", "Home")';
-        }, 3000);
-    </script>
-}
-
-<div class="row justify-content-center py-5">
-    <div class="col-md-8">
-        <div class="d-flex justify-content-between mb-3">
-            <h3>Eventos</h3>
-            <a asp-action="Create" class="btn btn-primary">Criar Novo Evento</a>
-        </div>
-
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Imagem</th>
+            <th>Título</th>
+            <th>Cidade</th>
+            <th>Data</th>
+            <th>Local</th>
+            <th>Vagas</th>
+            <th class="text-center">Ações</th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var evento in Model)
         {
-            <div class="card mb-3 shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title">@evento.Titulo</h5>
-                    <p class="card-text">
-                        <strong>Data:</strong> @evento.Data.ToString("dd/MM/yyyy") <br />
-                        <strong>Local:</strong> @evento.Local
-                    </p>
-                    <a asp-action="Details" asp-route-id="@evento.Id" class="btn btn-info btn-sm">Detalhes</a>
-                    <a asp-action="Edit" asp-route-id="@evento.Id" class="btn btn-warning btn-sm">Editar</a>
-                    <a asp-action="Delete" asp-route-id="@evento.Id" class="btn btn-danger btn-sm">Apagar</a>
-                </div>
-            </div>
+            <tr>
+                <td class="text-center">
+                    @if (!string.IsNullOrEmpty(evento.ImagemUrl))
+                    {
+                        <img src="@evento.ImagemUrl" alt="@evento.Titulo"
+                             class="img-thumbnail"
+                             style="max-width: 100px; max-height: 80px;" />
+                    }
+                    else
+                    {
+                        <span class="text-muted">Sem imagem</span>
+                    }
+                </td>
+                <td>@evento.Titulo</td>
+                <td>@evento.Cidade</td>
+                <td>@evento.Data.ToString("dd/MM/yyyy")</td>
+                <td>@evento.Local</td>
+                <td>@evento.Vagas</td>
+                <td class="text-center">
+                    <a asp-action="Details" asp-route-id="@evento.Id" class="btn btn-info btn-sm">
+                        <i class="fa fa-eye"></i> Detalhes
+                    </a>
+                    <a asp-action="Edit" asp-route-id="@evento.Id" class="btn btn-warning btn-sm">
+                        <i class="fa fa-edit"></i> Editar
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@evento.Id" class="btn btn-danger btn-sm">
+                        <i class="fa fa-trash"></i> Excluir
+                    </a>
+                </td>
+            </tr>
         }
-    </div>
-</div>
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success">
+    <i class="fa fa-plus"></i> Criar Novo Evento
+</a>

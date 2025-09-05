@@ -15,14 +15,18 @@ namespace EventosMVC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var eventos = await _eventosService.GetAllEventosAsync();
+            var eventos = await _eventosService.GetAllEventosAsync() ?? new List<EventosViewModel>();
             return View(eventos);
         }
 
         public async Task<IActionResult> Details(int id)
         {
             var evento = await _eventosService.GetEventoByIdAsync(id);
-            if (evento == null) return NotFound();
+            if (evento == null)
+            {
+                TempData["MensagemErro"] = "Evento não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
             return View(evento);
         }
 
@@ -32,25 +36,29 @@ namespace EventosMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(EventosViewModel evento)
         {
-            if (!ModelState.IsValid) return View(evento);
+            if (!ModelState.IsValid)
+                return View(evento);
 
             var (Sucesso, Mensagem) = await _eventosService.CreateEventoAsync(evento);
 
             if (Sucesso)
             {
-                // Armazena mensagem no TempData para a view
                 TempData["MensagemSucesso"] = Mensagem;
-                return RedirectToAction("Index");
+                return View(evento);
             }
 
-            ModelState.AddModelError("", Mensagem);
+            TempData["MensagemErro"] = Mensagem;
             return View(evento);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             var evento = await _eventosService.GetEventoByIdAsync(id);
-            if (evento == null) return NotFound();
+            if (evento == null)
+            {
+                TempData["MensagemErro"] = "Evento não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
             return View(evento);
         }
 
@@ -58,21 +66,35 @@ namespace EventosMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, EventosViewModel evento)
         {
-            if (id != evento.Id) return BadRequest();
-            if (!ModelState.IsValid) return View(evento);
+            if (id != evento.Id)
+            {
+                TempData["MensagemErro"] = "ID inválido.";
+                return RedirectToAction(nameof(Index));
+            }
+
+            if (!ModelState.IsValid)
+                return View(evento);
 
             var (Sucesso, Mensagem) = await _eventosService.UpdateEventoAsync(id, evento);
 
-            if (Sucesso) return RedirectToAction(nameof(Index));
+            if (Sucesso)
+            {
+                TempData["MensagemSucesso"] = Mensagem;
+                return View(evento);
+            }
 
-            ModelState.AddModelError("", Mensagem);
+            TempData["MensagemErro"] = Mensagem;
             return View(evento);
         }
 
         public async Task<IActionResult> Delete(int id)
         {
             var evento = await _eventosService.GetEventoByIdAsync(id);
-            if (evento == null) return NotFound();
+            if (evento == null)
+            {
+                TempData["MensagemErro"] = "Evento não encontrado.";
+                return RedirectToAction(nameof(Index));
+            }
             return View(evento);
         }
 
@@ -82,9 +104,13 @@ namespace EventosMVC.Controllers
         {
             var (Sucesso, Mensagem) = await _eventosService.DeleteEventoAsync(id);
 
-            if (Sucesso) return RedirectToAction(nameof(Index));
+            if (Sucesso)
+            {
+                TempData["MensagemSucesso"] = Mensagem;
+                return RedirectToAction(nameof(Index));
+            }
 
-            ModelState.AddModelError("", Mensagem);
+            TempData["MensagemErro"] = Mensagem;
             return RedirectToAction(nameof(Index));
         }
     }

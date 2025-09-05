@@ -1,0 +1,20 @@
+﻿@* Views/Shared/_AlertMessages.cshtml *@
+@{
+    var mensagens = new Dictionary<string, string>
+    {
+        { "MensagemSucesso", "success" },
+        { "MensagemErro", "danger" },
+        { "MensagemAviso", "warning" }
+    };
+}
+
+@foreach (var msg in mensagens)
+{
+    if (TempData[msg.Key] != null)
+    {
+        <div class="alert alert-@msg.Value alert-dismissible fade show mt-3 text-center" role="alert">
+            @TempData[msg.Key]
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+}

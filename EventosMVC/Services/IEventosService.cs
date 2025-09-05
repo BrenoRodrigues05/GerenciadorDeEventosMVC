@@ -1,4 +1,5 @@
 ﻿using EventosMVC.Models;
+using Microsoft.AspNetCore.JsonPatch;
 
 namespace EventosMVC.Services
 {
@@ -14,5 +15,7 @@ namespace EventosMVC.Services
         Task<(bool Sucesso, string Mensagem)> UpdateEventoAsync(int id, EventosViewModel eventoModel);
 
         Task<(bool Sucesso, string Mensagem)> DeleteEventoAsync(int id);
+
+       
     }
 }

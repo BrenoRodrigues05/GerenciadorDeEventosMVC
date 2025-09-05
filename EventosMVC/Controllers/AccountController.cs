@@ -40,7 +40,7 @@ namespace EventosMVC.Controllers
 
                 if (token == null || string.IsNullOrEmpty(token.Token))
                 {
-                    ModelState.AddModelError("", "Usuário ou senha inválidos");
+                    TempData["MensagemErro"] = "Usuário ou senha inválidos";
                     return View(model);
                 }
 
@@ -54,15 +54,15 @@ namespace EventosMVC.Controllers
                         : DateTimeOffset.UtcNow.AddHours(1)
                 });
 
-                return RedirectToAction("Index", "Home");
+                TempData["MensagemSucesso"] = "Login realizado com sucesso!";
+                return RedirectToAction("Index", "Home"); // Vai para a Home
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Erro ao autenticar: {ex.Message}");
+                TempData["MensagemErro"] = $"Erro ao autenticar: {ex.Message}";
                 return View(model);
             }
         }
-
 
         #endregion
 
@@ -72,6 +72,7 @@ namespace EventosMVC.Controllers
         public IActionResult Logout()
         {
             Response.Cookies.Delete("AuthToken");
+            TempData["MensagemSucesso"] = "Logout realizado com sucesso!";
             return RedirectToAction("Login");
         }
 
@@ -98,7 +99,7 @@ namespace EventosMVC.Controllers
 
                 if (!resultado.Sucesso)
                 {
-                    ModelState.AddModelError("", resultado.Mensagem);
+                    TempData["MensagemErro"] = resultado.Mensagem;
                     return View(model);
                 }
 
@@ -122,16 +123,16 @@ namespace EventosMVC.Controllers
                     });
                 }
 
+                TempData["MensagemSucesso"] = "Conta registrada e login realizado com sucesso!";
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError("", $"Erro ao registrar: {ex.Message}");
+                TempData["MensagemErro"] = $"Erro ao registrar: {ex.Message}";
                 return View(model);
             }
         }
 
         #endregion
-
     }
 }

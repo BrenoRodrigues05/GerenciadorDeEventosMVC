@@ -1,5 +1,6 @@
 ﻿using EventosMVC.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.JsonPatch;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
@@ -83,6 +84,7 @@ namespace EventosMVC.Services
             return (false, $"Erro ao atualizar evento: {response.StatusCode}. {errorContent}");
         }
 
+       
         public async Task<(bool Sucesso, string Mensagem)> DeleteEventoAsync(int id)
         {
             var response = await _httpClient.DeleteAsync($"http://localhost:8081/api/Eventos/{id}?api-version=2");
@@ -93,5 +95,10 @@ namespace EventosMVC.Services
             var errorContent = await response.Content.ReadAsStringAsync();
             return (false, $"Erro ao apagar evento: {response.StatusCode}. {errorContent}");
         }
+
+        
+
+        
+
     }
 }

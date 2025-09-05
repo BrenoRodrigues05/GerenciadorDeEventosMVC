@@ -1,19 +1,20 @@
 ﻿@model EventosMVC.Models.EventosViewModel
 
 @{
-    ViewData["Title"] = "Criar Evento";
+    ViewData["Title"] = "Editar Evento";
 }
 
 <div class="row justify-content-center py-5">
     <div class="col-md-8">
         <partial name="_AlertMessages" />
         <div class="card shadow-lg">
-            <div class="card-header bg-primary text-white">
-                <h4>Criar Evento</h4>
+            <div class="card-header bg-warning text-dark">
+                <h4>Editar Evento</h4>
             </div>
             <div class="card-body">
-                <form asp-action="Create" method="post">
+                <form asp-action="Edit" method="post">
                     @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
 
                     <div class="mb-3">
                         <label asp-for="Titulo" class="form-label"></label>
@@ -63,7 +64,7 @@
                         <span asp-validation-for="ImagemUrl" class="text-danger"></span>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Criar Evento</button>
+                    <button type="submit" class="btn btn-warning w-100">Salvar Alterações</button>
                     <a asp-action="Index" class="btn btn-secondary w-100 mt-2">Cancelar</a>
 
                     @* Mensagem geral de erro *@
