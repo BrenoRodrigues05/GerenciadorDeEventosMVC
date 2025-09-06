@@ -1,0 +1,41 @@
+﻿@model IEnumerable<EventosMVC.Models.InscricaoViewModel>
+
+@{
+    ViewData["Title"] = "Minhas Inscrições";
+}
+
+<h2 class="mb-4">Minhas Inscrições</h2>
+
+<partial name="_AlertMessages" />
+
+<table class="table table-striped table-bordered align-middle">
+    <thead class="table-dark">
+        <tr>
+            <th>Evento</th>
+            <th>Data do Evento</th>
+            <th>Data da Inscrição</th>
+            <th>Local</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inscricao in Model)
+        {
+            <tr>
+                <td>@inscricao.NomeEvento</td>
+                <td>@inscricao.DataEvento.ToString("dd/MM/yyyy")</td>
+                <td>@inscricao.DataInscricao.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@inscricao.LocalEvento</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@inscricao.Id" class="btn btn-info btn-sm">
+                        <i class="fa fa-eye"></i> Detalhes
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-success mt-3">
+    <i class="fa fa-plus"></i> Nova Inscrição
+</a>

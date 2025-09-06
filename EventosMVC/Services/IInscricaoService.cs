@@ -6,5 +6,7 @@ namespace EventosMVC.Services
     {
         Task<IEnumerable<InscricaoViewModel>> GetAllInscricoesAsync();
         Task<InscricaoViewModel> CreateInscricaoAsync(InscricaoViewModel inscricaoModel);
+
+        Task<IEnumerable<EventosViewModel>> GetEventosDisponiveisAsync();
     }
 }

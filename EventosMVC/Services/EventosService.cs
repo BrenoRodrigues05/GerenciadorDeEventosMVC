@@ -17,8 +17,8 @@ namespace EventosMVC.Services
             _httpClient = httpClientFactory.CreateClient();
             _options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
 
-            // Pega o token do cookie para autenticação
-            var token = httpContextAccessor.HttpContext?.Request.Cookies["AuthToken"];
+            // Pega token do claim do usuário logado
+            var token = httpContextAccessor.HttpContext?.User?.FindFirst("JWT")?.Value;
             if (!string.IsNullOrEmpty(token))
             {
                 _httpClient.DefaultRequestHeaders.Authorization =
@@ -95,10 +95,6 @@ namespace EventosMVC.Services
             var errorContent = await response.Content.ReadAsStringAsync();
             return (false, $"Erro ao apagar evento: {response.StatusCode}. {errorContent}");
         }
-
-        
-
-        
 
     }
 }

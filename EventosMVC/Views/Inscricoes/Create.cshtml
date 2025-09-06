@@ -1,0 +1,31 @@
+﻿@model EventosMVC.Models.InscricaoViewModel
+
+@{
+    ViewData["Title"] = "Nova Inscrição";
+}
+
+<h2 class="mb-4">Inscrever-se em Evento</h2>
+
+<partial name="_AlertMessages" />
+
+<form asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+
+    <div class="mb-3">
+        <label asp-for="EventoId" class="form-label">Evento</label>
+        <select asp-for="EventoId" class="form-select" asp-items="ViewBag.EventosDisponiveis">
+            <option value="">-- Selecione um evento --</option>
+        </select>
+        <span asp-validation-for="EventoId" class="text-danger"></span>
+    </div>
+
+    @* O ParticipanteId será preenchido automaticamente no controller *@
+    <input type="hidden" asp-for="ParticipanteId" />
+
+    <button type="submit" class="btn btn-primary">Confirmar Inscrição</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -39,5 +39,20 @@ namespace EventosMVC.Services
             }
             return null!;
         }
+        public async Task<IEnumerable<EventosViewModel>> GetEventosDisponiveisAsync()
+        {
+            // Pega todos os eventos
+            var response = await _httpClient.GetAsync("http://localhost:8081/api/Eventos?api-version=2");
+            if (!response.IsSuccessStatusCode) return Enumerable.Empty<EventosViewModel>();
+
+            var eventos = await response.Content.ReadFromJsonAsync<IEnumerable<EventosViewModel>>(_options);
+            if (eventos == null) return Enumerable.Empty<EventosViewModel>();
+
+            // Filtra apenas eventos com vagas
+            var eventosDisponiveis = eventos.Where(e => e.Vagas > 0);
+
+            return eventosDisponiveis;
+        }
+
     }
 }

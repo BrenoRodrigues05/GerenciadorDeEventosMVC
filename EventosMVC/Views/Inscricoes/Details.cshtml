@@ -1,0 +1,27 @@
+﻿@model EventosMVC.Models.InscricaoViewModel
+
+@{
+    ViewData["Title"] = "Detalhes da Inscrição";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-6">
+        <partial name="_AlertMessages" />
+
+        <div class="card shadow-lg">
+            <div class="card-header bg-primary text-white">
+                <h4>Inscrição #@Model.Id</h4>
+            </div>
+            <div class="card-body">
+                <p><strong>Evento:</strong> @Model.EventoNome</p>
+                <p><strong>Participante:</strong> @Model.ParticipanteNome</p>
+                <p><strong>Data da Inscrição:</strong> @Model.DataInscricao.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+            <div class="card-footer">
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> Voltar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

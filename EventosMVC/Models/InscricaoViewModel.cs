@@ -29,5 +29,13 @@ namespace EventosMVC.Models
         [Display(Name = "Data de Inscrição")]
         [DataType(DataType.Date)]
         public DateTime DataInscricao { get; set; } = DateTime.Now;
-    }
+
+        [Display(Name = "Nome Do evento")]
+        public string NomeEvento => $"{EventoNome} (ID: {EventoId})";
+
+        [Display(Name = "Data do Evento")]
+        public DateTime DataEvento { get; set; }
+        [Display(Name = "Local do Evento")]
+        public string LocalEvento { get; set; } = string.Empty; 
+    }    
 }

@@ -28,9 +28,14 @@
                 <p><strong>Descrição:</strong> @Model.Descricao</p>
             </div>
             <div class="card-footer d-flex justify-content-between">
-                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
-                    <i class="fa fa-edit me-1"></i> Editar
-                </a>
+                @* Botão Editar apenas para Admin ou SuperAdmin *@
+                @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                {
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">
+                        <i class="fa fa-edit me-1"></i> Editar
+                    </a>
+                }
+
                 <a asp-action="Index" class="btn btn-secondary">
                     <i class="fa fa-arrow-left me-1"></i> Voltar
                 </a>

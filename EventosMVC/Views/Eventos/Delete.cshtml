@@ -1,0 +1,46 @@
+﻿@model EventosMVC.Models.EventosViewModel
+
+@{
+    ViewData["Title"] = "Excluir Evento";
+}
+
+<div class="row justify-content-center py-5">
+    <div class="col-md-8">
+        <partial name="_AlertMessages" />
+
+        <div class="card shadow-lg">
+            <div class="card-header bg-danger text-white">
+                <h4>Excluir Evento</h4>
+            </div>
+            <div class="card-body">
+                <p>Tem certeza de que deseja excluir este evento?</p>
+
+                <dl class="row">
+                    <dt class="col-sm-3">Título</dt>
+                    <dd class="col-sm-9">@Model.Titulo</dd>
+
+                    <dt class="col-sm-3">Data</dt>
+                    <dd class="col-sm-9">@Model.Data.ToString("dd/MM/yyyy")</dd>
+
+                    <dt class="col-sm-3">Local</dt>
+                    <dd class="col-sm-9">@Model.Local</dd>
+
+                    <dt class="col-sm-3">Cidade</dt>
+                    <dd class="col-sm-9">@Model.Cidade</dd>
+                </dl>
+            </div>
+            <div class="card-footer d-flex justify-content-between">
+                <form asp-action="Delete" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" asp-for="Id" />
+                    <button type="submit" class="btn btn-danger">
+                        <i class="fa fa-trash me-1"></i> Confirmar Exclusão
+                    </button>
+                </form>
+                <a asp-action="Index" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left me-1"></i> Cancelar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

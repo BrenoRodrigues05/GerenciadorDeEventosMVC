@@ -43,18 +43,41 @@
                     <a asp-action="Details" asp-route-id="@evento.Id" class="btn btn-info btn-sm">
                         <i class="fa fa-eye"></i> Detalhes
                     </a>
-                    <a asp-action="Edit" asp-route-id="@evento.Id" class="btn btn-warning btn-sm">
-                        <i class="fa fa-edit"></i> Editar
-                    </a>
-                    <a asp-action="Delete" asp-route-id="@evento.Id" class="btn btn-danger btn-sm">
-                        <i class="fa fa-trash"></i> Excluir
-                    </a>
+
+                    @* Botão Editar só para Admin e SuperAdmin *@
+                    @if (User.IsInRole("Admin") || User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Edit" asp-route-id="@evento.Id" class="btn btn-warning btn-sm">
+                            <i class="fa fa-edit"></i> Editar
+                        </a>
+                    }
+
+                    @* Botão Excluir só para SuperAdmin *@
+                    @if (User.IsInRole("SuperAdmin"))
+                    {
+                        <a asp-action="Delete" asp-route-id="@evento.Id" class="btn btn-danger btn-sm">
+                            <i class="fa fa-trash"></i> Excluir
+                        </a>
+                    }
+
+                    @* Botão de Inscrição para qualquer usuário logado *@
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <a asp-controller="Inscricoes" asp-action="Create"
+                           asp-route-eventoId="@evento.Id" class="btn btn-success btn-sm">
+                            <i class="fa fa-ticket"></i> Inscrever-se
+                        </a>
+                    }
                 </td>
             </tr>
         }
     </tbody>
 </table>
 
-<a asp-action="Create" class="btn btn-success">
-    <i class="fa fa-plus"></i> Criar Novo Evento
-</a>
+@* Botão Criar só para SuperAdmin *@
+@if (User.IsInRole("SuperAdmin"))
+{
+    <a asp-action="Create" class="btn btn-success mt-3">
+        <i class="fa fa-plus"></i> Criar Novo Evento
+    </a>
+}
