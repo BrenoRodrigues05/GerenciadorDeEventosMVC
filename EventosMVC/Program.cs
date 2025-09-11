@@ -23,6 +23,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IAutenticação, AutenticacaoService>();
 builder.Services.AddScoped<IEventosService, EventosService>();
 builder.Services.AddScoped<IInscricaoService, InscricaoService>();
+builder.Services.AddScoped<IParticipantesService, ParticipantesService>();
 
 // Configuração de autenticação via Cookie
 builder.Services.AddAuthentication("MyCookieAuth")

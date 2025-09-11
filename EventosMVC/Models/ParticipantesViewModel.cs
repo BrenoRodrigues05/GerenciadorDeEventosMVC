@@ -19,7 +19,7 @@ namespace EventosMVC.Models
 
         [Phone(ErrorMessage = "O telefone não é válido.")]
         [Display(Name = "Telefone")]
-        public string Telefone { get; set; } = string.Empty;
+        public string? Telefone { get; set; } 
 
     }
 }

@@ -15,7 +15,7 @@
             <div class="card-body">
                 <p><strong>Evento:</strong> @Model.EventoNome</p>
                 <p><strong>Participante:</strong> @Model.ParticipanteNome</p>
-                <p><strong>Data da Inscrição:</strong> @Model.DataInscricao.ToString("dd/MM/yyyy HH:mm")</p>
+                <p><strong>Data da Inscrição:</strong> @Model.DataInscricao?.ToString("dd/MM/yyyy HH:mm")</p>
             </div>
             <div class="card-footer">
                 <a asp-action="Index" class="btn btn-secondary">

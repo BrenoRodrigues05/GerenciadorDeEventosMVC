@@ -28,7 +28,7 @@ namespace EventosMVC.Services
 
         public async Task<IEnumerable<EventosViewModel>> GetAllEventosAsync()
         {
-            var response = await _httpClient.GetAsync("http://localhost:8081/api/Eventos?api-version=2");
+            var response = await _httpClient.GetAsync("http://localhost:8083/api/Eventos?api-version=2");
             if (response.IsSuccessStatusCode)
             {
                 var eventos = await response.Content.ReadFromJsonAsync<IEnumerable<EventosViewModel>>(_options);
@@ -39,7 +39,7 @@ namespace EventosMVC.Services
 
         public async Task<EventosViewModel> GetEventoByIdAsync(int id)
         {
-            var response = await _httpClient.GetAsync($"http://localhost:8081/api/Eventos/{id}?api-version=2");
+            var response = await _httpClient.GetAsync($"http://localhost:8083/api/Eventos/{id}?api-version=2");
             if (response.IsSuccessStatusCode)
             {
                 var evento = await response.Content.ReadFromJsonAsync<EventosViewModel>(_options);
@@ -63,7 +63,7 @@ namespace EventosMVC.Services
             };
 
             var response = await _httpClient.PostAsJsonAsync(
-                "http://localhost:8081/api/Eventos?api-version=2", dtoApi);
+                "http://localhost:8083/api/Eventos?api-version=2", dtoApi);
 
             if (response.IsSuccessStatusCode)
                 return (true, "Evento criado com sucesso!");
@@ -75,7 +75,7 @@ namespace EventosMVC.Services
         public async Task<(bool Sucesso, string Mensagem)> UpdateEventoAsync(int id, EventosViewModel eventoModel)
         {
             var response = await _httpClient.PutAsJsonAsync(
-                $"http://localhost:8081/api/Eventos/{id}?api-version=2", eventoModel);
+                $"http://localhost:8083/api/Eventos/{id}?api-version=2", eventoModel);
 
             if (response.IsSuccessStatusCode)
                 return (true, "Evento atualizado com sucesso!");
@@ -87,7 +87,7 @@ namespace EventosMVC.Services
        
         public async Task<(bool Sucesso, string Mensagem)> DeleteEventoAsync(int id)
         {
-            var response = await _httpClient.DeleteAsync($"http://localhost:8081/api/Eventos/{id}?api-version=2");
+            var response = await _httpClient.DeleteAsync($"http://localhost:8083/api/Eventos/{id}?api-version=2");
 
             if (response.IsSuccessStatusCode)
                 return (true, "Evento removido com sucesso!");

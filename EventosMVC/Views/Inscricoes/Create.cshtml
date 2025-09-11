@@ -11,6 +11,7 @@
 <form asp-action="Create" method="post">
     @Html.AntiForgeryToken()
 
+    @* Dropdown de eventos *@
     <div class="mb-3">
         <label asp-for="EventoId" class="form-label">Evento</label>
         <select asp-for="EventoId" class="form-select" asp-items="ViewBag.EventosDisponiveis">
@@ -19,13 +20,36 @@
         <span asp-validation-for="EventoId" class="text-danger"></span>
     </div>
 
-    @* O ParticipanteId será preenchido automaticamente no controller *@
-    <input type="hidden" asp-for="ParticipanteId" />
+    @* ParticipanteId preenchido automaticamente no controller *@
+    <input type="hidden" asp-for="ParticipanteId" value="@Model.ParticipanteId" />
+
+    @* Mensagens de validação gerais *@
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger mt-3">
+            Verifique os erros no formulário antes de enviar.
+        </div>
+    }
 
     <button type="submit" class="btn btn-primary">Confirmar Inscrição</button>
-    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Cancelar</a>
 </form>
+
+@* Debug rápido para verificar se ParticipanteId está correto *@
+<p class="text-muted mt-2">ParticipanteId: @Model.ParticipanteId</p>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+
+    <script>
+        // Se quiser, pode adicionar validações custom aqui
+        // Exemplo: garantir que o usuário selecionou um evento
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const eventoSelect = document.querySelector('select[name="EventoId"]');
+            if (!eventoSelect.value) {
+                e.preventDefault();
+                alert('Por favor, selecione um evento.');
+            }
+        });
+    </script>
 }

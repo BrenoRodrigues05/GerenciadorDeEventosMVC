@@ -3,76 +3,111 @@ using EventosMVC.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.Extensions.Logging;
 
 namespace EventosMVC.Controllers
 {
-    [Authorize] // Qualquer usuário logado
+    [Authorize] // Apenas usuários logados
     public class InscricoesController : Controller
     {
         private readonly IInscricaoService _inscricaoService;
+        private readonly IParticipantesService _participantesService;
 
-        public InscricoesController(IInscricaoService inscricaoService)
+        public InscricoesController(
+            IInscricaoService inscricaoService,
+            IParticipantesService participantesService)
         {
             _inscricaoService = inscricaoService;
+            _participantesService = participantesService;
         }
 
-        // GET: Inscricoes - Lista apenas as inscrições do usuário logado
-        public async Task<IActionResult> Index()
+        // 🔹 Recupera participante logado via claim "sub"
+        private async Task<ParticipantesViewModel?> ObterParticipanteLogadoAsync()
         {
-            var participanteId = int.Parse(User.FindFirst("sub")?.Value ?? "0");
-            var todas = await _inscricaoService.GetAllInscricoesAsync() ?? new List<InscricaoViewModel>();
-            var minhasInscricoes = todas.Where(i => i.ParticipanteId == participanteId);
+            var subClaim = User.Claims.FirstOrDefault(c => c.Type == "sub")?.Value;
+            if (string.IsNullOrEmpty(subClaim) || !int.TryParse(subClaim, out int participanteId))
+                return null;
 
-            return View(minhasInscricoes);
+            return await _participantesService.GetByIdAsync(participanteId);
         }
 
-        // GET: Inscricoes/Create - Formulário para nova inscrição
-        public async Task<IActionResult> Create(int? eventoId)
+        // 🔹 Preenche dropdown de eventos disponíveis
+        private async Task PreencherEventosDisponiveisAsync(int? eventoId = null)
         {
-            // Eventos disponíveis (com vagas)
             var eventos = await _inscricaoService.GetEventosDisponiveisAsync();
             ViewBag.EventosDisponiveis = new SelectList(
                 eventos.Select(e => new { e.Id, Nome = $"{e.Titulo} - {e.Data:dd/MM/yyyy} - {e.Cidade}" }),
                 "Id",
                 "Nome",
-                 eventoId // seleciona automaticamente se veio por rota
+                eventoId
             );
+        }
 
-            var participanteId = int.Parse(User.FindFirst("sub")?.Value ?? "0");
+        // GET: Inscricoes
+        public async Task<IActionResult> Index()
+        {
+            var participante = await ObterParticipanteLogadoAsync();
+            if (participante == null)
+                return RedirectToAction("Index", "Eventos");
+
+            var todas = await _inscricaoService.GetAllInscricoesAsync();
+            var minhasInscricoes = todas.Where(i => i.ParticipanteId == participante.Id);
+
+            return View(minhasInscricoes);
+        }
+
+        // GET: Inscricoes/Create
+        public async Task<IActionResult> Create(int? eventoId)
+        {
+            var participante = await ObterParticipanteLogadoAsync();
+            if (participante == null)
+                return RedirectToAction("Index", "Eventos");
+
             var model = new InscricaoViewModel
             {
-                ParticipanteId = participanteId,
+                ParticipanteId = participante.Id,
                 EventoId = eventoId ?? 0
             };
 
+            await PreencherEventosDisponiveisAsync(model.EventoId);
             return View(model);
         }
 
-        // POST: Inscricoes/Create - Criação da inscrição
+        // POST: Inscricoes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(InscricaoViewModel model)
         {
+            // 1️⃣ Garantir que o participante está logado
+            var participante = await ObterParticipanteLogadoAsync();
+            if (participante == null)
+            {
+                TempData["MensagemErro"] = "Não foi possível carregar o perfil do participante.";
+                return RedirectToAction("Index", "Eventos");
+            }
+
+            // 2️⃣ Validar model
             if (!ModelState.IsValid)
             {
-                // Recarregar dropdown
-                var eventos = await _inscricaoService.GetEventosDisponiveisAsync();
-                ViewBag.EventosDisponiveis = new SelectList(
-                    eventos.Select(e => new { e.Id, Nome = $"{e.Titulo} - {e.Data:dd/MM/yyyy} - {e.Cidade}" }),
-                    "Id",
-                    "Nome"
-                );
-
+                await PreencherEventosDisponiveisAsync(model.EventoId);
                 return View(model);
             }
 
             try
             {
-                // Garantir que o participante logado é o correto
-                model.ParticipanteId = int.Parse(User.FindFirst("sub")?.Value ?? "0");
+                // 3️⃣ Preencher campos obrigatórios
+                model.ParticipanteId = participante.Id;
+                model.ParticipanteNome = participante.Nome;
+                model.DataInscricao ??= DateTime.Now;
 
+                // 4️⃣ Chamar o service
                 var created = await _inscricaoService.CreateInscricaoAsync(model);
+
+                if (created == null)
+                {
+                    TempData["MensagemErro"] = "Falha ao criar inscrição. Verifique os logs para mais detalhes.";
+                    await PreencherEventosDisponiveisAsync(model.EventoId);
+                    return View(model);
+                }
 
                 TempData["MensagemSucesso"] = $"Inscrição criada com sucesso para {created.ParticipanteNome}!";
                 return RedirectToAction(nameof(Index));
@@ -80,36 +115,25 @@ namespace EventosMVC.Controllers
             catch (Exception ex)
             {
                 TempData["MensagemErro"] = $"Erro ao criar inscrição: {ex.Message}";
-
-                // Recarregar dropdown
-                var eventos = await _inscricaoService.GetEventosDisponiveisAsync();
-                ViewBag.EventosDisponiveis = new SelectList(
-                    eventos.Select(e => new { e.Id, Nome = $"{e.Titulo} - {e.Data:dd/MM/yyyy} - {e.Cidade}" }),
-                    "Id",
-                    "Nome"
-                );
-
+                await PreencherEventosDisponiveisAsync(model.EventoId);
                 return View(model);
             }
         }
 
+
         // GET: Inscricoes/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            var participante = await ObterParticipanteLogadoAsync();
+            if (participante == null)
+                return RedirectToAction("Index", "Eventos");
+
             var todas = await _inscricaoService.GetAllInscricoesAsync();
-            var inscricao = todas.FirstOrDefault(i => i.Id == id);
+            var inscricao = todas.FirstOrDefault(i => i.Id == id && i.ParticipanteId == participante.Id);
 
             if (inscricao == null)
             {
-                TempData["MensagemErro"] = "Inscrição não encontrada.";
-                return RedirectToAction(nameof(Index));
-            }
-
-            // Garantir que o usuário só veja suas inscrições
-            var participanteId = int.Parse(User.FindFirst("sub")?.Value ?? "0");
-            if (inscricao.ParticipanteId != participanteId)
-            {
-                TempData["MensagemErro"] = "Acesso negado a esta inscrição.";
+                TempData["MensagemErro"] = "Inscrição não encontrada ou acesso negado.";
                 return RedirectToAction(nameof(Index));
             }
 
