@@ -25,6 +25,7 @@ namespace EventosMVC.Services
         {
             var client = _httpClientFactory.CreateClient();
 
+            // Pega o token do claim "JWT" do usuário logado
             var token = _httpContextAccessor.HttpContext?.User?.Claims
                 .FirstOrDefault(c => c.Type == "JWT")?.Value;
 
@@ -84,14 +85,11 @@ namespace EventosMVC.Services
             model.DataInscricao ??= DateTime.Now;
             var client = GetHttpClient();
 
-            var payload = new
+            var payload = new InscricaoDTO
             {
-                dto = new InscricaoDTO
-                {
-                    EventoId = model.EventoId,
-                    ParticipanteId = model.ParticipanteId,
-                    DataInscricao = model.DataInscricao
-                }
+                EventoId = model.EventoId,
+                ParticipanteId = model.ParticipanteId,
+                DataInscricao = model.DataInscricao
             };
 
             var response = await client.PostAsJsonAsync("http://localhost:8083/api/Inscricao?api-version=2", payload);
